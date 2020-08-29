@@ -2317,10 +2317,11 @@ namespace vMenuClient
                 bool enabled = MainMenu.MiscSettingsMenu.MiscShowOverheadNames && IsAllowed(Permission.MSOverheadNames);
                 if (!enabled)
                 {
-                    for (var i = 0; i < 255; i++)
+                    foreach (KeyValuePair<Player, int> gamerTag in gamerTags)
                     {
-                        RemoveMpGamerTag(i);
+                        RemoveMpGamerTag(gamerTag.Value);
                     }
+                    gamerTags.clear();
                 }
                 else
                 {
