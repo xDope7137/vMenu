@@ -28,10 +28,10 @@ namespace vMenuClient
             public DateTime bannedUntil;
             public string banReason;
             public string bannedBy;
-            public Guid uuid;
+            public string uuid;
         }
 
-            BanRecord currentRecord = new BanRecord();
+        BanRecord currentRecord = new BanRecord();
 
         public List<BanRecord> banlist = new List<BanRecord>();
 
@@ -49,7 +49,7 @@ namespace vMenuClient
             {
                 if (banlist.Count > 1)
                 {
-                    string filterText = await GetUserInput("Filter List By Username (leave this empty to reset the filter!)");
+                    string filterText = await GetUserInput("Filter username or ban id (leave this empty to reset the filter)");
                     if (string.IsNullOrEmpty(filterText))
                     {
                         Subtitle.Custom("Filters have been cleared.");
@@ -58,8 +58,8 @@ namespace vMenuClient
                     }
                     else
                     {
-                        menu.FilterMenuItems(item => item.ItemData is BanRecord br && br.playerName.ToLower().Contains(filterText.ToLower()));
-                        Subtitle.Custom("Username filter has been applied.");
+                        menu.FilterMenuItems(item => item.ItemData is BanRecord br && (br.playerName.ToLower().Contains(filterText.ToLower()) || br.uuid.ToLower().Contains(filterText.ToLower())));
+                        Subtitle.Custom("Filter has been applied.");
                     }
                 }
                 else
@@ -123,8 +123,6 @@ namespace vMenuClient
 
             menu.OnItemSelect += (sender, item, index) =>
             {
-                //if (index < banlist.Count)
-                //{
                 currentRecord = item.ItemData;
 
                 bannedPlayer.MenuSubtitle = "Ban Record: ~y~" + currentRecord.playerName;
@@ -172,7 +170,6 @@ namespace vMenuClient
                 }
 
                 bannedPlayer.RefreshIndex();
-                //}
             };
             MenuController.AddMenu(bannedPlayer);
 
@@ -206,12 +203,7 @@ namespace vMenuClient
         public void UpdateBanList(string banJsonString)
         {
             banlist.Clear();
-            dynamic obj = JsonConvert.DeserializeObject(banJsonString);
-            foreach (dynamic br in obj)
-            {
-                BanRecord b = JsonToBanRecord(br);
-                banlist.Add(b);
-            }
+            banlist = JsonConvert.DeserializeObject<List<BanRecord>>(banJsonString);
             UpdateBans();
         }
 
@@ -237,7 +229,7 @@ namespace vMenuClient
         private void UnbanPlayer(BanRecord record)
         {
             banlist.Remove(record);
-            BaseScript.TriggerServerEvent("vMenu:RequestPlayerUnban", record.uuid.ToString());
+            BaseScript.TriggerServerEvent("vMenu:RequestPlayerUnban", record.uuid);
         }
 
         /// <summary>
