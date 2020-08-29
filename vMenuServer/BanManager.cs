@@ -181,11 +181,11 @@ namespace vMenuServer
                                                 /* ban forever */ (new DateTime(3000, 1, 1)));
 
                         BanRecord ban = new BanRecord(
-                            GetSafePlayerName(target.Name),
+                            target.Name,
                             target.Identifiers.ToList(),
                             banduration,
                             banReason,
-                            GetSafePlayerName(source.Name),
+                            source.Name,
                             Guid.NewGuid()
                         );
 
@@ -278,17 +278,21 @@ namespace vMenuServer
         /// </summary>
         /// <param name="source"></param>
         /// <param name="banRecordJsonString"></param>
-        private void RemoveBanRecord([FromSource] Player source, string banRecordJsonString)
+        private void RemoveBanRecord([FromSource] Player source, string uuid)
         {
             if (source != null && !string.IsNullOrEmpty(source.Name) && source.Name.ToLower() != "**invalid**" && source.Name.ToLower() != "** invalid **")
             {
                 if (IsPlayerAceAllowed(source.Handle, "vMenu.OnlinePlayers.Unban") || IsPlayerAceAllowed(source.Handle, "vMenu.OnlinePlayers.All") || IsPlayerAceAllowed(source.Handle, "vMenu.Everything"))
                 {
-                    BanRecord ban = JsonConvert.DeserializeObject<BanRecord>(banRecordJsonString);
+                    var banRecord = GetBanList().Find((ban) =>
+                    {
+                        return ban.uuid.ToString() == uuid;
+                    });
+                    RemoveBan(banRecord);
                     
                     BanLog($"The following ban record has been removed (player unbanned). " +
-                        $"[Player: {ban.playerName} was banned by {ban.bannedBy} for {ban.banReason} until {ban.bannedUntil}.]");
-                    TriggerEvent("vMenu:UnbanSuccessful", JsonConvert.SerializeObject(ban).ToString());
+                        $"[Player: {banRecord.playerName} was banned by {banRecord.bannedBy} for {banRecord.banReason} until {banRecord.bannedUntil}.]");
+                    TriggerEvent("vMenu:UnbanSuccessful", JsonConvert.SerializeObject(banRecord).ToString());
                 }
                 else
                 {
@@ -318,7 +322,7 @@ namespace vMenuServer
                     reason = $"You have been automatically banned. If you believe this was done by error, please contact the server owner for support. Aditional information: {vMenuShared.ConfigManager.GetSettingsString(vMenuShared.ConfigManager.Setting.vmenu_default_ban_message_information)}.";
                 }
                 var ban = new BanRecord(
-                    GetSafePlayerName(source.Name),
+                    source.Name,
                     source.Identifiers.ToList(),
                     new DateTime(3000, 1, 1),
                     reason,
@@ -334,27 +338,6 @@ namespace vMenuServer
                 source.TriggerEvent("vMenu:GoodBye"); // this is much more fun than just kicking them.
                 Log("A cheater has been banned because they attempted to trigger a fake event.", LogLevel.warning);
             }
-        }
-
-        /// <summary>
-        /// Returns the safe playername string to be used in json converter to prevent fuckups when saving the bans file.
-        /// </summary>
-        /// <param name="playerName"></param>
-        /// <returns></returns>
-        public static string GetSafePlayerName(string playerName)
-        {
-            if (!string.IsNullOrEmpty(playerName))
-            {
-                string safeName = playerName.Replace("^", "").Replace("<", "").Replace(">", "").Replace("~", "");
-                safeName = Regex.Replace(safeName, @"[^\u0000-\u007F]+", string.Empty);
-                safeName = safeName.Trim(new char[] { '.', ',', ' ', '!', '?' });
-                if (string.IsNullOrEmpty(safeName))
-                {
-                    safeName = "InvalidPlayerName";
-                }
-                return safeName;
-            }
-            return "InvalidPlayerName";
         }
 
         /// <summary>

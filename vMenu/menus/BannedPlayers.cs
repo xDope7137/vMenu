@@ -21,16 +21,17 @@ namespace vMenuClient
         /// <summary>
         /// Struct used to store bans.
         /// </summary>
-        public struct BanRecord
+        public class BanRecord
         {
             public string playerName;
             public List<string> identifiers;
             public DateTime bannedUntil;
             public string banReason;
             public string bannedBy;
+            public Guid uuid;
         }
 
-        BanRecord currentRecord = new BanRecord();
+            BanRecord currentRecord = new BanRecord();
 
         public List<BanRecord> banlist = new List<BanRecord>();
 
@@ -99,7 +100,7 @@ namespace vMenuClient
                     {
                         if (banlist.Contains(currentRecord))
                         {
-                            UnbanPlayer(banlist.IndexOf(currentRecord));
+                            UnbanPlayer(currentRecord);
                             bannedPlayer.GetMenuItems()[5].Label = "";
                             bannedPlayer.GoBack();
                         }
@@ -233,11 +234,10 @@ namespace vMenuClient
         /// We'll just assume that worked fine, so remove the item from our local list, we'll re-sync once the menu is re-opened.
         /// </summary>
         /// <param name="index"></param>
-        private void UnbanPlayer(int index)
+        private void UnbanPlayer(BanRecord record)
         {
-            BanRecord record = banlist[index];
             banlist.Remove(record);
-            BaseScript.TriggerServerEvent("vMenu:RequestPlayerUnban", JsonConvert.SerializeObject(record));
+            BaseScript.TriggerServerEvent("vMenu:RequestPlayerUnban", record.uuid.ToString());
         }
 
         /// <summary>

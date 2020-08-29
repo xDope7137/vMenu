@@ -1106,7 +1106,8 @@ namespace vMenuClient
             Emergency = 18,
             Military = 19,
             Commercial = 20,
-            Trains = 21
+            Trains = 21,
+            OpenWheel = 22,
              */
 
             public static Dictionary<string, List<string>> VehicleClasses { get; } = new Dictionary<string, List<string>>()

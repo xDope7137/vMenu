@@ -413,12 +413,12 @@ namespace vMenuServer
                             if (p != null)
                             {
                                 BanManager.BanRecord ban = new BanManager.BanRecord(
-                                    BanManager.GetSafePlayerName(p.Name),
+                                    p.Name,
                                     p.Identifiers.ToList(),
                                     new DateTime(3000, 1, 1),
                                     reason,
                                     "Server Console",
-                                    new Guid()
+                                    Guid.NewGuid()
                                 );
 
                                 BanManager.AddBan(ban);
@@ -447,7 +447,20 @@ namespace vMenuServer
                     }
                     else if (args[0].ToString().ToLower() == "migrate" && source < 1)
                     {
-                        Debug.WriteLine("This will return soon!");
+
+                        string file = LoadResourceFile(GetCurrentResourceName(), "bans.json");
+                        if (string.IsNullOrEmpty(file) || file == "[]")
+                        {
+                            Debug.WriteLine("[ERROR] No bans.json file found or it's empty.");
+                            return;
+                        }
+                        Debug.WriteLine("Importing all ban records from the bans.json file into the new storage system. This may take some time...");
+                        var bans = JsonConvert.DeserializeObject<List<BanManager.BanRecord>>(file);
+                        bans.ForEach((br) =>
+                        {
+                            var record = new BanManager.BanRecord(br.playerName, br.identifiers, br.bannedUntil, br.banReason, br.bannedBy, Guid.NewGuid());
+                            BanManager.AddBan(record);
+                        });
                     }
                     else
                     {
