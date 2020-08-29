@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MenuAPI;
 using Newtonsoft.Json;
 using CitizenFX.Core;
-using static CitizenFX.Core.UI.Screen;
 using static CitizenFX.Core.Native.API;
 using static vMenuClient.CommonFunctions;
 using static vMenuShared.PermissionsManager;
@@ -576,7 +573,10 @@ namespace vMenuClient
             menu.AddMenuItem(hideHud);
             menu.AddMenuItem(lockCamX);
             menu.AddMenuItem(lockCamY);
-            menu.AddMenuItem(exportData);
+            if (MainMenu.EnableExperimentalFeatures)
+            {
+                menu.AddMenuItem(exportData);
+            }
             menu.AddMenuItem(saveSettings);
 
             // Handle checkbox changes.
@@ -695,21 +695,20 @@ namespace vMenuClient
                 // export data
                 if (item == exportData)
                 {
+                    MenuController.CloseAllMenus();
                     var vehicles = GetSavedVehicles();
                     var normalPeds = StorageManager.GetSavedPeds();
                     var mpPeds = StorageManager.GetSavedMpPeds();
                     var weaponLoadouts = WeaponLoadouts.GetSavedWeapons();
-                    //SetNuiFocus(true, true);
-                    //SendNuiMessage(JsonConvert.SerializeObject(new
-                    //var data = JsonConvert.SerializeObject(new
-                    //{
-                    //    saved_vehicles = vehicles,
-                    //    normal_peds = normalPeds,
-                    //    mp_characters = mpPeds,
-                    //    weapon_loadouts = weaponLoadouts
-                    //});
-                    //Debug.WriteLine(data.Length + "\n" + data);
-                    //TriggerServerEvent("test", data);
+                    var data = JsonConvert.SerializeObject(new
+                    {
+                        saved_vehicles = vehicles,
+                        normal_peds = normalPeds,
+                        mp_characters = mpPeds,
+                        weapon_loadouts = weaponLoadouts
+                    });
+                    SendNuiMessage(data);
+                    SetNuiFocus(true, true);
                 }
                 // save settings
                 else if (item == saveSettings)
