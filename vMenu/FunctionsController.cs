@@ -2321,7 +2321,7 @@ namespace vMenuClient
                     {
                         RemoveMpGamerTag(gamerTag.Value);
                     }
-                    gamerTags.clear();
+                    gamerTags.Clear();
                 }
                 else
                 {
