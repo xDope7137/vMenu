@@ -594,31 +594,6 @@ namespace vMenuClient
                     {
                         if (!(it is MenuCheckboxItem))
                         {
-                            if (EventManager.CurrentlySwitchingWeather)
-                            {
-                                if (it.Enabled)
-                                {
-                                    it.Enabled = false;
-                                    it.LeftIcon = MenuItem.Icon.LOCK;
-                                    if (!it.Description.Contains("switching"))
-                                    {
-                                        it.Description += " Currently switching weather type, please wait before setting a new weather type.";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (!it.Enabled)
-                                {
-                                    it.Enabled = true;
-                                    it.LeftIcon = MenuItem.Icon.NONE;
-                                    if (it.Description.Contains("switching"))
-                                    {
-                                        it.Description = it.Description.Replace(" Currently switching weather type, please wait before setting a new weather type.", "");
-                                    }
-                                }
-                            }
-
                             if (it == vMenuClient.WeatherOptions.weatherHashMenuIndex[(uint)GetNextWeatherTypeHashName()])
                             {
                                 it.RightIcon = MenuItem.Icon.TICK;
@@ -633,17 +608,17 @@ namespace vMenuClient
                     if (IsAllowed(Permission.WODynamic))
                     {
                         MenuCheckboxItem dynWeatherTmp = (MenuCheckboxItem)weatherMenu.GetMenuItems()[0];
-                        dynWeatherTmp.Checked = EventManager.dynamicWeather;
+                        dynWeatherTmp.Checked = EventManager.DynamicWeatherEnabled;
                         if (IsAllowed(Permission.WOBlackout))
                         {
                             MenuCheckboxItem blackoutTmp = (MenuCheckboxItem)weatherMenu.GetMenuItems()[1];
-                            blackoutTmp.Checked = EventManager.blackoutMode;
+                            blackoutTmp.Checked = EventManager.IsBlackoutEnabled;
                         }
                     }
                     else if (IsAllowed(Permission.WOBlackout))
                     {
                         MenuCheckboxItem blackoutTmp = (MenuCheckboxItem)weatherMenu.GetMenuItems()[0];
-                        blackoutTmp.Checked = EventManager.blackoutMode;
+                        blackoutTmp.Checked = EventManager.IsBlackoutEnabled;
                     }
                 }
             }
@@ -1209,7 +1184,6 @@ namespace vMenuClient
                     foreach (Player p in pl)
                     {
                         tmpiterator++;
-                        await Delay(0);
                         if (p.IsDead)
                         {
                             if (deadPlayers.Contains(p.Handle)) { return; }
@@ -1286,9 +1260,9 @@ namespace vMenuClient
                             }
                         }
                     }
-                    await Delay(50);
                 }
             }
+            await Task.FromResult(0);
         }
         #endregion
         #endregion
@@ -2026,7 +2000,7 @@ namespace vMenuClient
                         }
                     }
 
-                    while (Game.PlayerPed.IsDead || IsScreenFadedOut() || IsScreenFadingOut() || IsScreenFadingIn())
+                    while (Game.PlayerPed.IsDead || IsScreenFadedOut() || IsScreenFadingOut())
                     {
                         await Delay(0);
                     }
