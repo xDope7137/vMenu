@@ -764,11 +764,11 @@ namespace vMenuClient
             {
                 VoiceChatSettingsMenu = new VoiceChat();
                 Menu menu = VoiceChatSettingsMenu.GetMenu();
-                MenuItem button = new MenuItem("Voice Chat Settings", "Change Voice Chat options here.")
+                /*MenuItem button = new MenuItem("Voice Chat Settings", "Change Voice Chat options here.")
                 {
                     Label = "→→→"
                 };
-                AddMenu(Menu, menu, button);
+                AddMenu(Menu, menu, button);*/
             }
 
             {

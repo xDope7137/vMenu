@@ -19,7 +19,7 @@ namespace vMenuClient
         private Menu menu;
         public bool EnableVoicechat = UserDefaults.VoiceChatEnabled;
         public bool ShowCurrentSpeaker = UserDefaults.ShowCurrentSpeaker;
-        public bool ShowVoiceStatus = UserDefaults.ShowVoiceStatus;
+        //public bool ShowVoiceStatus = UserDefaults.ShowVoiceStatus;
         public float currentProximity = UserDefaults.VoiceChatProximity;
         public List<string> channels = new List<string>()
         {
@@ -45,7 +45,7 @@ namespace vMenuClient
 
         private void CreateMenu()
         {
-            currentChannel = channels[0];
+            /*currentChannel = channels[0];
             if (IsAllowed(Permission.VCStaffChannel))
             {
                 channels.Add("Staff Channel");
@@ -56,7 +56,7 @@ namespace vMenuClient
 
             MenuCheckboxItem voiceChatEnabled = new MenuCheckboxItem("Enable Voice Chat", "Enable or disable voice chat.", EnableVoicechat);
             MenuCheckboxItem showCurrentSpeaker = new MenuCheckboxItem("Show Current Speaker", "Shows who is currently talking.", ShowCurrentSpeaker);
-            MenuCheckboxItem showVoiceStatus = new MenuCheckboxItem("Show Microphone Status", "Shows whether your microphone is open or muted.", ShowVoiceStatus);
+            //MenuCheckboxItem showVoiceStatus = new MenuCheckboxItem("Show Microphone Status", "Shows whether your microphone is open or muted.", ShowVoiceStatus);
 
             List<string> proximity = new List<string>()
             {
@@ -85,7 +85,7 @@ namespace vMenuClient
 
                 menu.AddMenuItem(voiceChatProximity);
                 menu.AddMenuItem(voiceChatChannel);
-                menu.AddMenuItem(showVoiceStatus);
+                //menu.AddMenuItem(showVoiceStatus);
             }
 
             menu.OnCheckboxChange += (sender, item, index, _checked) =>
@@ -98,10 +98,10 @@ namespace vMenuClient
                 {
                     ShowCurrentSpeaker = _checked;
                 }
-                else if (item == showVoiceStatus)
-                {
-                    ShowVoiceStatus = _checked;
-                }
+                //else if (item == showVoiceStatus)
+                //{
+                    //ShowVoiceStatus = _checked;
+                //}
             };
 
             menu.OnListIndexChange += (sender, item, oldIndex, newIndex, itemIndex) =>
@@ -116,7 +116,7 @@ namespace vMenuClient
                     currentChannel = channels[newIndex];
                     Subtitle.Custom($"New voice chat channel set to: ~b~{channels[newIndex]}~s~.");
                 }
-            };
+            };*/
 
         }
 

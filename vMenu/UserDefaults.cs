@@ -358,11 +358,11 @@ namespace vMenuClient
             set { SetSavedSettingsBool("voiceChatShowSpeaker", value); }
         }
 
-        public static bool ShowVoiceStatus
+        /*public static bool ShowVoiceStatus
         {
             get { return GetSettingsBool("voiceChatShowVoiceStatus"); }
             set { SetSavedSettingsBool("voiceChatShowVoiceStatus", value); }
-        }
+        }*/
         #endregion
 
         #region Player Appearance
@@ -655,8 +655,8 @@ namespace vMenuClient
                 ShowCurrentSpeaker = MainMenu.VoiceChatSettingsMenu.ShowCurrentSpeaker;
                 prefs.Add("voiceChatShowSpeaker", ShowCurrentSpeaker);
 
-                ShowVoiceStatus = MainMenu.VoiceChatSettingsMenu.ShowVoiceStatus;
-                prefs.Add("voiceChatShowVoiceStatus", ShowVoiceStatus);
+                //ShowVoiceStatus = MainMenu.VoiceChatSettingsMenu.ShowVoiceStatus;
+                //prefs.Add("voiceChatShowVoiceStatus", ShowVoiceStatus);
             }
 
             if (MainMenu.WeaponOptionsMenu != null)
