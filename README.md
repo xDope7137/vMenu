@@ -1,13 +1,6 @@
-#### Latest Builds
+#### Latest Changes
 
-##### Latest AppVeyor build
-
-|Latest Build|
-|:-:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/inf2kinljmp8a5ul?svg=true)](https://ci.appveyor.com/project/TomGrobbe/vmenu)|
-
---------
-
+**This version of vMenu has fixed the issue with pma-voice/mumble-voip**
 
 # vMenu
 vMenu is server sided menu for FiveM servers, including full\* permission support.
